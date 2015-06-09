@@ -1,0 +1,10 @@
+src/app/code/local/Mothership/Example                       app/code/local/Mothership/Example
+
+src/skin/frontend/base/default/js/mothership/template       skin/frontend/base/default/js/mothership/template
+src/skin/frontend/base/default/css/mothership/template      skin/frontend/base/default/css/mothership/template
+
+src/app/etc/modules/Mothership_Example.xml                  app/etc/modules/Mothership_Example.xml
+
+src/lib/Mothership/Example                                  lib/Mothership/Example
+
+src/test/lib/Mothership/Example                             test/lib/Mothership/Example

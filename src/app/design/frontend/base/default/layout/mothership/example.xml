@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Magento
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Open Software License (OSL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/osl-3.0.php
+* If you did not receive a copy of the license and are unable to
+* obtain it through the world-wide-web, please send an email
+* to license@magentocommerce.com so we can send you a copy immediately.
+*
+* DISCLAIMER
+*
+* Do not edit or add to this file if you wish to upgrade Magento to newer
+* versions in the future. If you wish to customize Magento for your
+* needs please refer to http://www.magentocommerce.com for more information.
+*
+* @category  Mothership
+* @package   Mothership_Checkout
+* @author    Johannes Maximilian Müller <mueller@mothership.de>
+* @copyright Copyright (c) 2015 Mothership GmbH
+* @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+* @link      http://www.mothership.de/
+*/
+-->
+
+<layout version="0.1.0">
+
+    <!--
+    The default one step checkout controller. It is independent from the default magento
+    checkout, so you will have a lot of 'duplicated' phtml. But this is necessary to
+    ensure, that the extension will be easily extendable.
+    -->
+    <checkout_onestep_index translate="label">
+
+        <!--
+        This is optional for specific projects, to set a custom header and footer
+        -->
+        <remove name="header"/>
+        <reference name="after_body_start">
+            <block type="page/html"
+                   name="checkout.header"
+                   as="checkoutHeader"
+                   template="mothership/checkout/page/header.phtml">
+            </block>
+        </reference>
+
+        <remove name="footer"/>
+        <reference name="before_body_end">
+            <block type="page/html"
+                   name="checkout.footer"
+                   as="checkoutFooter"
+                   template="mothership/checkout/page/footer.phtml"/>
+        </reference>
+
+        <label>One Step Checkout</label>
+
+        <!-- Mage_Checkout -->
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+
+        <reference name="head">
+            <!--
+            The checkout can be styled using sass. Just start the grunt watcher and apply
+            all changes to the sass folder.
+            -->
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/mothership/checkout/styles.css</name>
+                <params/>
+            </action>
+
+            <action method="addItem"><type>skin_js</type><name>js/mothership/checkout/classes/MethodStep.js</name></action>
+            <action method="addItem"><type>skin_js</type><name>js/mothership/checkout/classes/Checkout.js</name></action>
+            <action method="addItem"><type>skin_js</type><name>js/mothership/checkout/classes/Login.js</name></action>
+            <action method="addItem"><type>skin_js</type><name>js/mothership/checkout/classes/Billing.js</name></action>
+            <action method="addItem"><type>skin_js</type><name>js/mothership/checkout/classes/Shipping.js</name></action>
+            <action method="addItem"><type>skin_js</type><name>js/mothership/checkout/classes/ShippingMethod.js</name></action>
+            <action method="addItem"><type>skin_js</type><name>js/mothership/checkout/classes/Payment.js</name></action>
+            <action method="addItem"><type>skin_js</type><name>js/mothership/checkout/classes/Review.js</name></action>
+
+            <!--
+            Add the Mothership Javascript Namespace
+            -->
+            <action method="addItem"><type>skin_js</type><name>js/mothership/checkout/classes/Mothership.js</name></action>
+
+            <!--
+            Add the google maps api for the form auto completion
+            -->
+            <block type="core/text" name="googleapis.com.maps">
+                <action method="setText">
+                    <text>
+                        <![CDATA[<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>]]>
+                    </text>
+                </action>
+            </block>
+            <action method="addItem"><type>skin_js</type><name>js/mothership/checkout/classes/AutoComplete.js</name></action>
+
+            <!--
+            Add the auto completion for email
+            -->
+            <action method="addItem"><type>skin_js</type><name>js/mothership/checkout/classes/AutoCompleteEmail.js</name></action>
+
+
+        </reference>
+
+        <reference name="content">
+
+            <!--
+            The container holds all the structural logic
+            -->
+            <block type="mothership_checkout/container"
+                   name="checkout.onestep"
+                   template="mothership/checkout/container.phtml">
+
+                <block type="mothership_checkout/onestep_login"
+                       name="checkout.onestep.login"
+                       as="login"
+                       template="mothership/checkout/login.phtml" />
+
+                <block type="mothership_checkout/onestep_billing"
+                       name="checkout.onestep.billing"
+                       as="billing"
+                       template="mothership/checkout/billing.phtml" />
+
+                <block type="mothership_checkout/onestep_shipping"
+                       name="checkout.onestep.shipping"
+                       as="shipping"
+                       template="mothership/checkout/shipping.phtml"/>
+
+                <block type="mothership_checkout/onestep_shipping_method"
+                       name="checkout.onestep.shipping_method"
+                       as="shipping_method"
+                       template="mothership/checkout/shipping_method.phtml">
+
+                    <!-- Use the default magento checkout -->
+                    <block type="checkout/onepage_shipping_method_available"
+                           name="checkout.onepage.shipping_method.available"
+                           as="available"
+                           template="mothership/checkout/shipping_method/available.phtml"/>
+                    <block type="checkout/onepage_shipping_method_additional"
+                           name="checkout.onepage.shipping_method.additional"
+                           as="additional"
+                           template="checkout/onepage/shipping_method/additional.phtml"/>
+
+                </block>
+
+                <block type="mothership_checkout/onestep_payment"
+                       name="checkout.onestep.payment"
+                       as="payment"
+                       template="mothership/checkout/payment.phtml">
+
+                    <block type="checkout/onepage_payment_methods"
+                           name="checkout.payment.methods"
+                           as="methods"
+                           template="mothership/checkout/payment/methods.phtml">
+                        <action method="setMethodFormTemplate">
+                            <method>purchaseorder</method>
+                            <template>payment/form/purchaseorder.phtml</template>
+                        </action>
+                    </block>
+
+                </block>
+
+                <block type="mothership_checkout/onestep_review"
+                       name="checkout.onestep.review"
+                       as="review"
+                       template="mothership/checkout/review.phtml">
+                </block>
+
+                <block type="core/template"
+                       name="checkout.onestep.submit"
+                       as="submit"
+                       template="mothership/checkout/submit.phtml">
+
+                    <block type="core/template"
+                           name="checkout.onestep.review.button"
+                           as="button"
+                           template="mothership/checkout/review/button.phtml"/>
+                    <block type="checkout/agreements"
+                           name="checkout.onestep.agreements"
+                           as="agreements"
+                           template="mothership/checkout/agreements.phtml"/>
+                </block>
+
+            </block>
+
+        </reference>
+
+    </checkout_onestep_index>
+
+    <!-- defining handle for an ajax shipping method update -->
+    <checkout_onestep_shippingmethod>
+        <!-- Mage_Checkout -->
+        <remove name="right"/>
+        <remove name="left"/>
+        <block
+                type="checkout/onepage_shipping_method_available"
+                name="checkout.shipping.methods"
+                output="toHtml"
+                template="mothership/checkout/shipping_method/available.phtml"/>
+    </checkout_onestep_shippingmethod>
+
+    <!-- defining handle for an ajax payment method update -->
+    <checkout_onestep_paymentmethod>
+        <remove name="right"/>
+        <remove name="left"/>
+
+        <block
+                type="checkout/onepage_payment_methods"
+                name="checkout.payment.methods"
+                output="toHtml"
+                template="mothership/checkout/payment/methods.phtml">
+            <action method="setMethodFormTemplate">
+                <method>purchaseorder</method>
+                <template>payment/form/purchaseorder.phtml</template>
+            </action>
+        </block>
+    </checkout_onestep_paymentmethod>
+
+
+    <checkout_onestep_review translate="label">
+        <label>One Step Checkout Overview</label>
+        <!-- Mage_Checkout -->
+        <remove name="right"/>
+        <remove name="left"/>
+
+        <block
+                type="checkout/onepage_review_info"
+                name="checkout.review"
+                output="toHtml"
+                template="mothership/checkout/review/info.phtml">
+            <action method="addItemRender">
+                <type>default</type>
+                <block>checkout/cart_item_renderer</block>
+                <template>mothership/checkout/review/item.phtml</template>
+            </action>
+            <action method="addItemRender">
+                <type>grouped</type>
+                <block>checkout/cart_item_renderer_grouped</block>
+                <template>mothership/checkout/review/item.phtml</template>
+            </action>
+            <action method="addItemRender">
+                <type>configurable</type>
+                <block>checkout/cart_item_renderer_configurable</block>
+                <template>mothership/checkout/review/item.phtml</template>
+            </action>
+            <block
+                    type="checkout/cart_totals"
+                    name="checkout.onestep.review.info.totals"
+                    as="totals"
+                    template="mothership/checkout/review/totals.phtml"/>
+            <block
+                    type="core/text_list"
+                    name="checkout.onepage.review.info.items.before"
+                    as="items_before"
+                    translate="label">
+                <label>Items Before</label>
+            </block>
+            <block
+                    type="core/text_list"
+                    name="checkout.onestep.review.info.items.after"
+                    as="items_after"
+                    translate="label">
+                <label>Items After</label>
+            </block>
+        </block>
+    </checkout_onestep_review>
+
+    <checkout_onestep_success translate="label">
+        <label>One Step Checkout Success</label>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/1column.phtml</template>
+            </action>
+        </reference>
+        <reference name="content">
+            <block
+                    type="checkout/onepage_success"
+                    name="checkout.success"
+                    template="checkout/success.phtml"/>
+        </reference>
+    </checkout_onestep_success>
+
+</layout>

@@ -1,0 +1,112 @@
+<config>
+
+    <modules>
+        <Mothership_Example>
+            <version>1.0.0</version>
+        </Mothership_Example>
+    </modules>
+
+    <global>
+        <blocks>
+            <mothership_example>
+                <class>Mothership_Example_Block</class>
+            </mothership_example>
+        </blocks>
+
+        <helpers>
+            <mothership_example>
+                <class>Mothership_Example_Helper</class>
+            </mothership_example>
+        </helpers>
+
+        <models>
+            <mothership_example>
+                <class>Mothership_Example_Model</class>
+            </mothership_example>
+        </models>
+
+        <!--
+            Check the list of available events
+            https://www.nicksays.co.uk/magento-events-cheat-sheet-1-7/
+            You can also easily implement your own event observer
+        -->
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <mothership_example_controller_action_predispatch>
+                        <class>mothership_example/observer</class>
+                        <method>preDispatch</method>
+                    </mothership_example_controller_action_predispatch>
+                </observers>
+            </controller_action_predispatch>
+        </events>
+
+        <psr0_namespaces>
+            <Mothership />
+        </psr0_namespaces>
+
+    </global>
+
+    <frontend>
+        <layout>
+            <updates>
+                <mothership_example module="Mothership_Example">
+                    <file>mothership/example.xml</file>
+                </mothership_example>
+            </updates>
+        </layout>
+
+        <routers>
+            <checkout>
+                <args>
+                    <!--
+                    We will extend the default Magento Namespace for the frontname "checkout". If you are not familiar
+                    with this functionality. It simply adds this module in the list of allowed routes and will search
+                    for the matching controllers. In this case the controller is named OnestepController which will
+                    resolve into checkout_onestep as route.
+
+                    An alternative approach would be the use of an explicit module and frontname. This is also a possible
+                    solution but you will need to rename the OnestepController in IndexController and assign then to an
+                    appropriate route like <frontname>checkoutv2_onestep</frontname>. It is not preferable to 'pollute'
+                    the default route 'checkout' if you are using this method.
+                    -->
+                    <modules>
+                        <Mothership_Example before="Mage_Example">Mothership_Example</Mothership_Example>
+                    </modules>
+                </args>
+            </checkout>
+        </routers>
+
+        <translate>
+            <modules>
+                <Mothership_Example>
+                    <files>
+                        <checkout>Mothership_Example.csv</checkout>
+                    </files>
+                </Mothership_Example>
+            </modules>
+        </translate>
+    </frontend>
+
+    <!-- by default enable the Mothership example extension -->
+    <default>
+        <example>
+            <options>
+                <mothership_example_extension_enabled>1</mothership_example_extension_enabled>
+            </options>
+        </example>
+    </default>
+
+    <!--
+    Absolutely mandatory for unit testing. Is needed by ecomdev to flag a module, so that it will recognized by
+    the unit tests
+    -->
+    <phpunit>
+        <suite>
+            <modules>
+                <Mothership_Example />
+            </modules>
+        </suite>
+    </phpunit>
+
+</config>
