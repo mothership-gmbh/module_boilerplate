@@ -7,11 +7,11 @@ module.exports = function (grunt) {
 
         typescript: {
             base: {
-                src    : ['_grunt/src/js/**/*.ts'],
+                src    : ['src/js/*.ts'],
                 dest   : '../src/skin/frontend/base/default/js/mothership/template/compiled.js',
                 options: {
                     module     : 'amd',  //or commonjs
-                    target     : 'es5',  //or es3
+                    target     : 'es5',  //or es3s
                     sourceMap  : true,
                     declaration: true
                 }
@@ -47,6 +47,7 @@ module.exports = function (grunt) {
         // setup jshint tasks
         jshint    : {
             options: {
+                globalstrict: true,
                 curly    : true,
                 eqeqeq   : true,
                 immed    : true,
