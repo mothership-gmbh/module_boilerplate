@@ -18,27 +18,32 @@ module.exports = function (grunt) {
             }
         },
 
-        // setup sass task
-        sass      : {
+        sass: {
+            options: {
+                sourcemap: 'none', // this requires SASS version >= 3.4
+                trace: true,
+                style: 'expanded',
+                compass: true // this requires COMPASS version >= 1.0 and a contrib.rb file
+            },
 
             // task for the specific single files
-            basic  : {
+            basic: {
                 files: {
-                    '../src/skin/frontend/base/default/css/mothership/template/style.css': 'src/sass/styles.scss'
+                    '../../www/skin/frontend/base/default/js/mothership/template/css/basic.css': '../../www/skin/frontend/base/default/js/mothership/template/sass/basic.scss'
                 }
             },
 
-            // task for all files in the component directory
+            // task for all files in the modules directory
             modules: {
                 options: {
                     update: true
                 },
-                files  : [{
+                files: [{
                     expand: true,
-                    cwd   : 'src/sass/component',
-                    src   : ['*.scss'],
-                    dest  : 'src/css/component',
-                    ext   : '.css'
+                    cwd: '../../www/skin/frontend/base/default/js/mothership/template/sass/modules',
+                    src: ['*.scss'],
+                    dest: '../../www/skin/frontend/base/default/js/mothership/template/css/modules',
+                    ext: '.css'
                 }]
             }
 
@@ -73,7 +78,13 @@ module.exports = function (grunt) {
                     "Class"  : true
                 }
             },
-            all    : ['Gruntfile.js', '../src/skin/frontend/base/default/js/mothership/template/**/*.js']
+            all    : [
+                'Gruntfile.js',
+                '../../www/skin/frontend/mothership/craft/js/**/*.js',
+                // exclude some vendor files
+                '!../../www/skin/frontend/mothership/craft/js/jquery*.js',
+                '!../../www/skin/frontend/mothership/craft/js/magento/*.js'
+            ]
         },
 
         // setup watch tasks
@@ -90,6 +101,45 @@ module.exports = function (grunt) {
                 'typescript',
                 'jshint'
             ]
+        },
+
+        // minimize css files
+        cssmin: {
+            basic: {
+                files: {
+                    '../../www/skin/frontend/base/default/js/mothership/template/css/basic.css': '../../www/skin/frontend/base/default/js/mothership/template/css/basic.css'
+                }
+            },
+            modules: {
+                files: [{
+                    expand: true,
+                    cwd: '../../www/skin/frontend/base/default/js/mothership/template/css/modules',
+                    src: ['*.css'],
+                    dest: '../../www/skin/frontend/base/default/js/mothership/template/css/modules',
+                    ext: '.css'
+                }]
+            }
+        },
+
+        // uglify js files
+        uglify: {
+            options: {
+                mangleProperties: true,
+                reserveDOMCache: true
+            },
+            jquery: {
+                files: {
+                    '../../www/skin/frontend/base/default/js/mothership/template/js/jquery-1.11.1.js': '../../www/skin/frontend/base/default/js/mothership/template/js/jquery-1.11.1.js'
+                }
+            },
+            modules: {
+                files: [{
+                    expand: true,
+                    cwd: '../../www/skin/frontend/base/default/js/mothership/template/js',
+                    src: '**/*.js',
+                    dest: '../../www/skin/frontend/base/default/js/mothership/template/js'
+                }]
+            }
         }
 
     });
@@ -99,8 +149,23 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-typescript');
+    grunt.loadNpmTasks('grunt-remove-logging');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
 
     // task that's going to be executed with 'grunt'
     grunt.registerTask('default', ['watch']);
 
+    /**
+     * Build task
+     *  sass - preprocesses SASS to CSS
+     *  cssmin - minifies CSS file
+     *  uglify - minifies JS file
+     *  jshint - checks js files
+     */
+    grunt.registerTask('build', [
+        'sass',
+        'cssmin',
+        'uglify'
+    ]);
 };
