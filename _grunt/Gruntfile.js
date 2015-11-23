@@ -29,7 +29,7 @@ module.exports = function (grunt) {
             // task for the specific single files
             basic: {
                 files: {
-                    '../../www/skin/frontend/base/default/js/mothership/template/css/basic.css': '../../www/skin/frontend/base/default/js/mothership/template/sass/basic.scss'
+                    '../../www/skin/frontend/base/default/mothership/template/css/styles.css': 'src/sass/styles.scss'
                 }
             },
 
@@ -40,9 +40,9 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: '../../www/skin/frontend/base/default/js/mothership/template/sass/modules',
+                    cwd: 'src/sass/modules',
                     src: ['*.scss'],
-                    dest: '../../www/skin/frontend/base/default/js/mothership/template/css/modules',
+                    dest: '../../www/skin/frontend/base/default/mothership/template/css/modules',
                     ext: '.css'
                 }]
             }
@@ -107,7 +107,7 @@ module.exports = function (grunt) {
         cssmin: {
             basic: {
                 files: {
-                    '../../www/skin/frontend/base/default/js/mothership/template/css/basic.css': '../../www/skin/frontend/base/default/js/mothership/template/css/basic.css'
+                    '../../www/skin/frontend/base/default/mothership/template/css/styles.css': '../../www/skin/frontend/base/default/mothership/template/css/styles.css'
                 }
             },
             modules: {

@@ -34,7 +34,20 @@
  *
  *            Just a sample block
  */
-class Mothership_Example_Block_Example extends Varien_Object
+class Mothership_Example_Block_Example extends Mage_Core_Block_Template
 {
+
+    /**
+     * @var Mothership_Example_Helper_Data
+     */
+    protected $_helperExample;
+
+    /**
+     * Register the helper
+     */
+    public function __construct() {
+        $this->_helperExample = Mage::helper('mothership_example');
+    }
+
 
 }

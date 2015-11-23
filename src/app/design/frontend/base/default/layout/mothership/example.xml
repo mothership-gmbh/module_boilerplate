@@ -39,7 +39,7 @@
             -->
             <action method="addItem">
                 <type>skin_css</type>
-                <name>css/mothership/checkout/styles.css</name>
+                <name>css/mothership/template/styles.css</name>
                 <params/>
             </action>
 
